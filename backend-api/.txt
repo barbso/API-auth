@@ -1,0 +1,1 @@
+mongodb+srv://diogolorenzobarbosa:Gamerbarbosa2006$@centralizarusuarios-api.1lec2jf.mongodb.net/?retryWrites=true&w=majority

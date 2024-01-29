@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: API Rest Clientes
+  description: API Rest
+  version: 1.0.0
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /teste:
+    get:
+      summary: Endpoint de teste
+      security: [{bearerAuth: []}]
+      responses:
+        '200':
+          description: Resposta bem-sucedida
+          content:
+            application/json:
+              example: { "ok": true }
+        '401':
+          description:  Não autorizado
+
+  /customer:
+    post:
+      summary: Criar um novo cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              nome: "Nome do Cliente"
+              email: "cliente@example.com"
+              CPF: "123.456.789-01"
+              telefone: "(11) 98765-4321"
+              usuario: "nome_usuario"
+              senha: "senha123"
+              confirm_senha: "senha123"
+      responses:
+        '200':
+          description: Cliente criado com sucesso
+          content:
+            application/json:
+              example:
+                customer:
+                  id: 1
+                  nome: "Nome do Cliente"
+                  email: "cliente@example.com"
+                  CPF: "123.456.789-01"
+                  telefone: "(11) 98765-4321"
+                  usuario: "nome_usuario"
+        '400':
+          description: Erro de solicitação inválida
+          content:
+            application/json:
+              example: { "error": "Preencha todos os campos" }
+        '401':
+          description: Erro de autenticação
+          content:
+            application/json:
+              example: { "error": "Credenciais inválidas" }
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example: { "error": "Erro no servidor" }
+
+  /login:
+    post:
+      summary: Autenticar um usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              usuario: "nome_usuario"
+              senha: "senha123"
+      responses:
+        '200':
+          description: Autenticação bem-sucedida
+          content:
+            application/json:
+              example:
+                token: "jwt_token"
+        '400':
+          description: Erro de solicitação inválida
+          content:
+            application/json:
+              example: { "error": "Usuário e senha são obrigatórios" }
+        '401':
+          description: Erro de autenticação
+          content:
+            application/json:
+              example: { "error": "Usuário não encontrado" }
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example: { "error": "Erro no servidor" }
