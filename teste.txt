@@ -1,1 +1,4 @@
-teste
+git status ver arquivos novos
+git add . adicionar todos os arquivos
+git commit -m "COMENTARIO"
+git push colocar no git hub
