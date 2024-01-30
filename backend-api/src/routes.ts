@@ -4,6 +4,8 @@ import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { compare } from 'bcryptjs';
 import { ensureAuthenticated } from './middleware/ensureAuthenticated';
+import { CreateCarController } from './controllers/CreateCarController';
+import { string } from 'zod';
 
 const accessTokenSecret = 'your_access_token_secret';
 const refreshTokenSecret = 'your_refresh_token_secret';
@@ -12,15 +14,17 @@ const prisma = new PrismaClient();
 
 export function routes(app: Express) {
 
-  app.get('/teste', ensureAuthenticated, (req: Request, res: Response) => {
+// Rotas dos Customers
+
+  app.get('/customer-autenticate', ensureAuthenticated, (req: Request, res: Response) => {
     res.json({ ok: true });
   });
 
-  app.post('/customer', async (req: Request, res: Response) => {
+  app.post('/customer-register', async (req: Request, res: Response) => {
     await new CreateCustomerController().handle(req, res);
   });
 
-  app.post('/login', async (req: Request, res: Response) => {
+  app.post('/customer-login', async (req: Request, res: Response) => {
     const { usuario, senha } = req.body as { usuario: string; senha: string };
 
     if (!usuario || !senha) {
@@ -41,7 +45,7 @@ export function routes(app: Express) {
       if (isValidPassword) {
         const accessToken = jwt.sign({ userId: customer.id }, accessTokenSecret, {
           subject: customer.id,
-          expiresIn: '20s',
+          expiresIn: '6d', // mudar depois!!!!!!!
         });
 
         let existingRefreshToken = await prisma.refreshToken.findFirst({
@@ -58,7 +62,7 @@ export function routes(app: Express) {
             },
           });
 
-          // Agora, também retornamos o refreshToken no login
+
           const refreshToken = jwt.sign({}, refreshTokenSecret, {
             expiresIn: '7d',
           });
@@ -76,7 +80,7 @@ export function routes(app: Express) {
             },
           });
 
-          // Agora, também retornamos o refreshToken no login
+
           return res.json({ accessToken, refreshToken });
         }
       } else {
@@ -116,13 +120,58 @@ export function routes(app: Express) {
         },
       });
 
-      // Agora, também retornamos o novo refreshToken
+
       return res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
     } catch (error) {
       console.error('Erro ao renovar o token:', error);
       return res.status(500).json({ error: 'Erro no servidor.' });
     }
   });
+
+  // Rotas do CRUD sobre carros
+
+  app.get('/cars-colsultLALL', ensureAuthenticated, async (req: Request, res: Response) => {
+    const list = await prisma.car.findMany()
+    res.json(list)
+  });
+
+  app.get('/cars-colsultBYmodelo', async (req: Request, res: Response) => {
+   
+  });
+
+  app.post('/cars-register',  ensureAuthenticated, async (req: Request, res: Response) => {
+    await new CreateCarController().handle(req, res);
+  });
+
+  app.delete('/cars-delete/:id', async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+
+      const existingCar = await prisma.car.findUnique({
+        where: { id: id },
+      });
+
+      if (!existingCar) {
+        return res.status(404).json({ error: 'Carro não encontrado.' });
+      }
+
+
+      await prisma.car.delete({
+        where: { id: id },
+      });
+
+      res.json({ message: 'Carro excluído com sucesso.' });
+    } catch (error) {
+      console.error('Erro ao excluir carro:', error);
+      res.status(500).json({ error: 'Erro no servidor ao excluir carro.' });
+    }
+  });
+
+  app.put('/cars-upadate', async (req: Request, res: Response) => {
+
+  });
+
 }
 
 export { accessTokenSecret };

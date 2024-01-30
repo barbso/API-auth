@@ -11,22 +11,32 @@ datasource db {
 }
 
 model Customer{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  nome String
-  email String
-  CPF String
-  telefone String
-  usuario String
-  senha String
-  confirm_senha String
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  nome             String
+  email            String
+  CPF              String
+  telefone         String
+  usuario          String
+  senha            String
+  confirm_senha    String
 
   @@map("customers")
 }
 
 model RefreshToken {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   userId    String
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Car{
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  modelo      String
+  marca       String
+  n_marchas   String
+  preco       String
+
+  @@map("cars")
 }

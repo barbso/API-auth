@@ -1,4 +1,4 @@
-import { Request, Response } from "express"; // Importar do Express
+import { Request, Response } from "express"; 
 import { CreateCustomerService } from '../services/CreateCustomerService';
 
 class CreateCustomerController {

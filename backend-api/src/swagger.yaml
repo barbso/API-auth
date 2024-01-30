@@ -12,9 +12,10 @@ components:
       bearerFormat: JWT
 
 paths:
-  /teste:
+  /customer-autenticate:
     get:
-      summary: Endpoint de teste
+      description: Testa se o token do usuário é válido
+      summary: Testa se o token do usuário é válido
       security: [{bearerAuth: []}]
       responses:
         '200':
@@ -28,8 +29,9 @@ paths:
             application/json:
               example: { "error": "Token inválido ou expirado" }  
 
-  /customer:
+  /customer-register:
     post:
+      description: Criar um novo cliente
       summary: Criar um novo cliente
       requestBody:
         required: true
@@ -72,8 +74,9 @@ paths:
             application/json:
               example: { "error": "Erro no servidor" }
 
-  /login:
+  /customer-login:
     post:
+      description: Autenticar um usuário
       summary: Autenticar um usuário
       requestBody:
         required: true
@@ -108,6 +111,7 @@ paths:
 
   /refresh-token:
     post:
+      description: Renovar o token de acesso
       summary: Renovar o token de acesso
       requestBody:
         required: true
@@ -138,3 +142,59 @@ paths:
           content:
             application/json:
               example: { "error": "Erro no servidor" }
+
+  /cars-register:
+    post:
+      description: Cadastrar novo carro
+      summary: Cadastrar novo carro
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              modelo: "Gol Special 1.0 2000"
+              marca: "Volkswagen"
+              n_marchas: "6"
+              preco: "10.000 R$"
+      responses:
+        '200':
+          description: Carro cadastrado com sucesso
+          content:
+            application/json:
+              example:
+                car:
+                  id: 1 
+                  modelo: "Gol Special 1.0 2000"
+                  marca: "Volkswagen"
+                  n_marchas: "6"
+                  preço: "10.000 R$"    
+        '400':
+          description: Preencha todos os campos
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              example: { "error": "Token inválido ou expirado" } 
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              example: { "error": "Erro no servidor" }
+  /cars-colsultLALL:
+    get:
+      description: Retorna todos os carros cadastrados
+      summary: Retorna todos os carros cadastrados
+      security: [{bearerAuth: []}]
+      responses:
+        '200':
+          description: Resposta bem-sucedida
+          content:
+            application/json:
+              example: { "ok": true }
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              example: { "error": "Token inválido ou expirado" }
+  

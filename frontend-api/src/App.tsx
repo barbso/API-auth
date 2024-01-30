@@ -32,7 +32,7 @@ export default function App() {
       
       try {
 
-        const response = await api.post('/customer', {
+        const response = await api.post('/customer-register', {
           nome: nomeRef.current?.value,
           email: emailRef.current?.value,
           CPF: cpfRef.current?.value,
@@ -69,7 +69,7 @@ export default function App() {
       }
 
       try {
-        const response = await api.post('/login', {
+        const response = await api.post('/customer-login', {
           usuario: usuarioLoginRef.current?.value,
           senha: senhaLoginRef.current?.value
         });
