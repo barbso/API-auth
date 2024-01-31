@@ -135,15 +135,11 @@ export function routes(app: Express) {
     res.json(list)
   });
 
-  app.get('/cars-colsultBYmodelo', async (req: Request, res: Response) => {
-   
-  });
-
   app.post('/cars-register',  ensureAuthenticated, async (req: Request, res: Response) => {
     await new CreateCarController().handle(req, res);
   });
 
-  app.delete('/cars-delete/:id', async (req: Request, res: Response) => {
+  app.delete('/cars-delete/:id', ensureAuthenticated, async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
@@ -168,8 +164,27 @@ export function routes(app: Express) {
     }
   });
 
-  app.put('/cars-upadate', async (req: Request, res: Response) => {
+  app.put('/cars-upadate/:id', ensureAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const { modelo,marca,n_marchas,preco} = req.body;
+  
+      let car = await prisma.car.findUnique({
+        where: { id: id },
+      });
+      if(!car){
+        return res.status(404).json({ error: 'Não foi possivel encontrar esse carro' });
+      }
 
+      car = await prisma.car.update({
+        where: { id: id }, data: { modelo, marca, n_marchas, preco }
+      });
+
+      return res.json(car)
+    }catch (error){
+      res.json({ error })
+    }
+    
   });
 
 }
